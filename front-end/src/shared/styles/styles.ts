@@ -8,7 +8,7 @@ export const Breakpoints = {
 }
 
 /* Font Sizes */
-const textSizing = [30, 20, 16, 14, 12]
+const textSizing = [30, 20, 16, 14, 12, 10]
 export const FontSize = {
   /** h1 (30px) */
   u1: textSizing[0] + "px",
@@ -20,6 +20,8 @@ export const FontSize = {
   u4: textSizing[3] + "px",
   /** h5 / small text (12px) */
   u5: textSizing[4] + "px",
+  //  extra small i.e - captions text (10px)
+  u6: textSizing[5] + "px",
 }
 
 /* Spacing */

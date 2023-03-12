@@ -17,3 +17,11 @@
 .app-header a {
   color: #fff;
 }
+
+.activeTabAlikeButton {
+  color: #282c34;
+}
+
+.tabAlikeButton {
+  opacity: 0.7;
+}
