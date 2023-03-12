@@ -1,16 +1,41 @@
-import React from "react"
+import React, { useEffect } from "react"
 import styled from "styled-components"
 import { Spacing, BorderRadius, FontWeight } from "shared/styles/styles"
 import { Images } from "assets/images"
 import { Colors } from "shared/styles/colors"
 import { Person, PersonHelper } from "shared/models/person"
 import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-switcher.component"
+import { useDispatch, useSelector } from "react-redux"
 
 interface Props {
   isRollMode?: boolean
   student: Person
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+  const dispatch = useDispatch()
+
+  const updateAttendance = (status) => {
+    switch (status) {
+      case "present":
+        return dispatch({
+          type: "SET_PRESENT_STUDENTS",
+          payload: student,
+        })
+      case "late":
+        return dispatch({
+          type: "SET_LATE_STUDENTS",
+          payload: student,
+        })
+      case "absent":
+        return dispatch({
+          type: "SET_ABSENT_STUDENTS",
+          payload: student,
+        })
+      default:
+        break
+    }
+  }
+
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
@@ -19,7 +44,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher />
+          <RollStateSwitcher onStateChange={updateAttendance} />
         </S.Roll>
       )}
     </S.Container>
