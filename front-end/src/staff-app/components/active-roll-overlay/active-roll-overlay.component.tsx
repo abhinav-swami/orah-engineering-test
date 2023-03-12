@@ -3,7 +3,7 @@ import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 export type ActiveRollAction = "filter" | "exit"
 interface Props {
@@ -12,8 +12,21 @@ interface Props {
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
+  const dispatch = useDispatch()
   const { isActive, onItemClick } = props
-  const { presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
+  const { roleFilter, presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
+
+  const applyRollFilter = (filterType) => {
+    let filterBy = roleFilter !== filterType ? filterType : "none"
+    if (filterType === "all") {
+      filterBy = "none"
+    }
+    dispatch({
+      type: "SET_ROLE_FILTER",
+      payload: roleFilter !== filterType ? filterType : "none",
+    })
+  }
+
   return (
     <S.Overlay isActive={isActive}>
       <S.Content>
@@ -26,6 +39,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
               { type: "late", count: lateStudents.length },
               { type: "absent", count: absentStudents.length },
             ]}
+            onItemClick={applyRollFilter}
           />
           <div style={{ marginTop: Spacing.u6 }}>
             <Button color="inherit" onClick={() => onItemClick("exit")}>

@@ -2,6 +2,7 @@ const initialState = {
   presentStudents: [],
   absentStudents: [],
   lateStudents: [],
+  roleFilter: "none",
 }
 
 const checkIfStudentAlreadyExistsInArr = (student, arr) => arr.some((s) => s.id === student.id)
@@ -13,7 +14,6 @@ export default function reducer(state = initialState, action) {
         return state
       }
       return {
-        // copying state in case we add few more states in the same reducer in future
         ...state,
         presentStudents: [...state.presentStudents, action.payload],
         absentStudents: state.absentStudents.filter((s) => s.id !== action.payload.id),
@@ -40,6 +40,12 @@ export default function reducer(state = initialState, action) {
         lateStudents: [...state.lateStudents, action.payload],
         absentStudents: state.absentStudents.filter((s) => s.id !== action.payload.id),
         presentStudents: state.presentStudents.filter((s) => s.id !== action.payload.id),
+      }
+
+    case "SET_ROLE_FILTER":
+      return {
+        ...state,
+        roleFilter: action.payload,
       }
 
     default:

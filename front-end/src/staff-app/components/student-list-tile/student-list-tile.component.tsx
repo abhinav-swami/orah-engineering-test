@@ -5,7 +5,7 @@ import { Images } from "assets/images"
 import { Colors } from "shared/styles/colors"
 import { Person, PersonHelper } from "shared/models/person"
 import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-switcher.component"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 
 interface Props {
   isRollMode?: boolean
@@ -44,7 +44,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher onStateChange={updateAttendance} />
+          <RollStateSwitcher onStateChange={updateAttendance} student={student} />
         </S.Roll>
       )}
     </S.Container>

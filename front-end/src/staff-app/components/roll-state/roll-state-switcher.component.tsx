@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { RolllStateType } from "shared/models/roll"
 import { RollStateIcon } from "staff-app/components/roll-state/roll-state-icon.component"
 
@@ -7,8 +8,19 @@ interface Props {
   size?: number
   onStateChange?: (newState: RolllStateType) => void
 }
-export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange }) => {
+export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange, student }) => {
   const [rollState, setRollState] = useState(initialState)
+  const { presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
+
+  useEffect(() => {
+    if (presentStudents.some((s) => s.id === student.id)) {
+      setRollState("present")
+    } else if (lateStudents.some((s) => s.id === student.id)) {
+      setRollState("late")
+    } else if (absentStudents.some((s) => s.id === student.id)) {
+      setRollState("absent")
+    }
+  }, [presentStudents, lateStudents, absentStudents])
 
   const nextState = () => {
     const states: RolllStateType[] = ["present", "late", "absent"]
@@ -19,7 +31,6 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
 
   const onClick = () => {
     const next = nextState()
-    setRollState(next)
     if (onStateChange) {
       onStateChange(next)
     }

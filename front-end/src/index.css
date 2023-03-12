@@ -25,3 +25,7 @@
 .tabAlikeButton {
   opacity: 0.7;
 }
+
+.bottom-underline {
+  border-bottom: 2px solid white !important;
+}

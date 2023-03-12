@@ -13,6 +13,7 @@ import { sortAndFilter } from "shared/helpers/sortAndFilterUtils"
 import sortIcon from "assets/icons/sort-icon.png"
 import sortAlphaAZ from "assets/icons/sort-alpha-a-to-z.png"
 import sortAlphaZA from "assets/icons/sort-alpha-z-to-a.png"
+import { useSelector } from "react-redux"
 
 const iconsSrc = {
   none: sortIcon,
@@ -21,6 +22,7 @@ const iconsSrc = {
 }
 
 export const HomeBoardPage: React.FC = () => {
+  const { roleFilter, presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
   const [isRollMode, setIsRollMode] = useState(false)
   const [sorting, setSorting] = useState("none")
   const [renderList, setRenderList] = useState([])
@@ -28,19 +30,26 @@ export const HomeBoardPage: React.FC = () => {
   const [filterQuery, setFilterQuery] = useState("")
   const [getStudents, data, loadState] = useApi<{ students: Person[]; success: Boolean }>({ url: "get-homeboard-students" })
 
+  const filterRollArrByKey = {
+    none: data?.students,
+    present: presentStudents,
+    late: lateStudents,
+    absent: absentStudents,
+  }
+
   useEffect(() => {
     void getStudents()
   }, [getStudents])
 
   useEffect(() => {
     const uptodateList = sortAndFilter({
-      arr: data?.students || [],
+      arr: filterRollArrByKey[roleFilter] || [],
       sortmethod: sorting,
       querystring: filterQuery,
       key: filterByKey,
     })
     setRenderList(uptodateList)
-  }, [filterQuery, sorting, data, filterByKey])
+  }, [filterQuery, sorting, data, filterByKey, roleFilter])
 
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
