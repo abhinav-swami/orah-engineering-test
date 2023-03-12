@@ -31,7 +31,7 @@ export const HomeBoardPage: React.FC = () => {
   const [getStudents, data, loadState] = useApi<{ students: Person[]; success: Boolean }>({ url: "get-homeboard-students" })
 
   const filterRollArrByKey = {
-    none: data?.students,
+    all: data?.students,
     present: presentStudents,
     late: lateStudents,
     absent: absentStudents,

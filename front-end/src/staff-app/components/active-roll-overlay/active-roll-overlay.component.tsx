@@ -17,13 +17,9 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
   const { roleFilter, presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
 
   const applyRollFilter = (filterType) => {
-    let filterBy = roleFilter !== filterType ? filterType : "none"
-    if (filterType === "all") {
-      filterBy = "none"
-    }
     dispatch({
       type: "SET_ROLE_FILTER",
-      payload: roleFilter !== filterType ? filterType : "none",
+      payload: roleFilter !== filterType ? filterType : "all",
     })
   }
 

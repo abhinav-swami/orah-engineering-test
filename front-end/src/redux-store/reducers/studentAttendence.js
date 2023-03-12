@@ -2,7 +2,7 @@ const initialState = {
   presentStudents: [],
   absentStudents: [],
   lateStudents: [],
-  roleFilter: "none",
+  roleFilter: "all",
 }
 
 const checkIfStudentAlreadyExistsInArr = (student, arr) => arr.some((s) => s.id === student.id)
