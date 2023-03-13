@@ -15,6 +15,7 @@ import sortAlphaAZ from "assets/icons/sort-alpha-a-to-z.png"
 import sortAlphaZA from "assets/icons/sort-alpha-z-to-a.png"
 import { useDispatch, useSelector } from "react-redux"
 import { createSaveRollPayload } from "shared/helpers/create-save-roll-payload"
+import { LoadState } from "shared/load-state/LoadState"
 
 const iconsSrc = {
   none: sortIcon,
@@ -79,16 +80,18 @@ export const HomeBoardPage: React.FC = () => {
     if (action === "exit") {
       clearRollState()
       setIsRollMode(false)
-    } else if (action === "complete") {
-      const student_roll_states = createSaveRollPayload({
-        presentStudents,
-        lateStudents,
-        absentStudents,
-      })
+    } else {
+      if(presentStudents.length === 0 && lateStudents.length === 0 && absentStudents.length === 0){
+        alert("No roll selected, please review !")
+        return ""
+      }
+
+      const student_roll_states = createSaveRollPayload({ presentStudents, lateStudents, absentStudents })
       saveRoll({ student_roll_states })
-        .then((res) => {
+        .then(() => {
           clearRollState()
           setIsRollMode(false)
+          alert("Roll state saved!")
         })
         .catch((err) => {
           console.error(err)
@@ -113,17 +116,9 @@ export const HomeBoardPage: React.FC = () => {
           changeFilterByKey={changeFilterByKey}
           filterByKey={filterByKey}
         />
-        {loadState === "loading" && (
-          <CenteredContainer>
-            <FontAwesomeIcon icon="spinner" size="2x" spin />
-          </CenteredContainer>
-        )}
+        {loadState === "loading" && <LoadState state={loadState} />}
 
-        {loadState === "loaded" && renderList && renderList.length === 0 && (
-          <CenteredContainer>
-            <div>No student found with current filter</div>
-          </CenteredContainer>
-        )}
+        {loadState === "loaded" && renderList && renderList.length === 0 && <LoadState state="empty" title="No student found with current filter" />}
 
         {loadState === "loaded" && renderList && (
           <>
@@ -133,11 +128,7 @@ export const HomeBoardPage: React.FC = () => {
           </>
         )}
 
-        {loadState === "error" && (
-          <CenteredContainer>
-            <div>Failed to load</div>
-          </CenteredContainer>
-        )}
+        {loadState === "error" && <LoadState state={loadState} />}
       </S.PageContainer>
       <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} />
     </>
