@@ -13,7 +13,8 @@ import { sortAndFilter } from "shared/helpers/sortAndFilterUtils"
 import sortIcon from "assets/icons/sort-icon.png"
 import sortAlphaAZ from "assets/icons/sort-alpha-a-to-z.png"
 import sortAlphaZA from "assets/icons/sort-alpha-z-to-a.png"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { createSaveRollPayload } from "shared/helpers/create-save-roll-payload"
 
 const iconsSrc = {
   none: sortIcon,
@@ -22,14 +23,15 @@ const iconsSrc = {
 }
 
 export const HomeBoardPage: React.FC = () => {
-  const { roleFilter, presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
+  const dispatch = useDispatch()
   const [isRollMode, setIsRollMode] = useState(false)
   const [sorting, setSorting] = useState("none")
   const [renderList, setRenderList] = useState([])
   const [filterByKey, setFilterByKey] = useState("first_name")
   const [filterQuery, setFilterQuery] = useState("")
   const [getStudents, data, loadState] = useApi<{ students: Person[]; success: Boolean }>({ url: "get-homeboard-students" })
-
+  const [saveRoll, saveRespose, loadStateRollSave] = useApi({ url: "save-roll" })
+  const { roleFilter, presentStudents, lateStudents, absentStudents } = useSelector((state) => state.studentAttendence)
   const filterRollArrByKey = {
     all: data?.students,
     present: presentStudents,
@@ -68,9 +70,29 @@ export const HomeBoardPage: React.FC = () => {
     }
   }
 
+  const clearRollState = () => {
+    dispatch({
+      type: "CLEAR_ROLL_STATE",
+    })
+  }
   const onActiveRollAction = (action: ActiveRollAction) => {
     if (action === "exit") {
+      clearRollState()
       setIsRollMode(false)
+    } else if (action === "complete") {
+      const student_roll_states = createSaveRollPayload({
+        presentStudents,
+        lateStudents,
+        absentStudents,
+      })
+      saveRoll({ student_roll_states })
+        .then((res) => {
+          clearRollState()
+          setIsRollMode(false)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     }
   }
 

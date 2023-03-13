@@ -48,6 +48,15 @@ export default function reducer(state = initialState, action) {
         roleFilter: action.payload,
       }
 
+    case "CLEAR_ROLL_STATE":
+      return {
+        ...state,
+        presentStudents: [],
+        absentStudents: [],
+        lateStudents: [],
+        roleFilter: "all",
+      }
+
     default:
       return state
   }
